@@ -5,33 +5,18 @@ from linebot.models import (
 )
 import google.generativeai as genai
 import os
-#from pyngrok import ngrok, conf
 from PIL import Image
 from dotenv import load_dotenv
 from io import BytesIO
 
-
-###########本地除錯專用，不用再改json路徑########
-import os
-### 获取脚本所在的目录路径
 script_directory = os.path.dirname(os.path.abspath(__file__))
-### 将当前工作目录更改为脚本所在的目录
-# os.chdir(script_directory)
-###########本地除錯專用，不用再改json路徑########
-#dotenv_path='.env'
 dotenv_path = os.path.join(script_directory, '.env')
-
 load_dotenv(dotenv_path)
 
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 ACCESS_TOKEN = os.getenv('LINE_ACCESS_TOKEN')
 CHANNEL_SECRET = os.getenv('LINE_CHANNEL_SECRET')
-#NGROK_AUTHTOKEN = os.getenv('NGROK_AUTHTOKEN')
 
-# # ngrok
-# conf.get_default().auth_token = NGROK_AUTHTOKEN
-# ngrok_tunnel = ngrok.connect(8888)
-# print("Ngrok Tunnel URL:", ngrok_tunnel.public_url)
 
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-pro')
