@@ -10,8 +10,17 @@ from PIL import Image
 from dotenv import load_dotenv
 from io import BytesIO
 
-# dotenv_path = '/Users/user/Library/CloudStorage/Dropbox/Code/python/GeminiLineBot/.env'
-dotenv_path='.env'
+
+###########本地除錯專用，不用再改json路徑########
+import os
+### 获取脚本所在的目录路径
+script_directory = os.path.dirname(os.path.abspath(__file__))
+### 将当前工作目录更改为脚本所在的目录
+# os.chdir(script_directory)
+###########本地除錯專用，不用再改json路徑########
+#dotenv_path='.env'
+dotenv_path = os.path.join(script_directory, '.env')
+
 load_dotenv(dotenv_path)
 
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
