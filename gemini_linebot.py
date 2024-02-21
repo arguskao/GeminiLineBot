@@ -5,23 +5,24 @@ from linebot.models import (
 )
 import google.generativeai as genai
 import os
-from pyngrok import ngrok, conf
+#from pyngrok import ngrok, conf
 from PIL import Image
 from dotenv import load_dotenv
 from io import BytesIO
 
-dotenv_path = '.env'
+# dotenv_path = '/Users/user/Library/CloudStorage/Dropbox/Code/python/GeminiLineBot/.env'
+dotenv_path='.env'
 load_dotenv(dotenv_path)
 
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 ACCESS_TOKEN = os.getenv('LINE_ACCESS_TOKEN')
 CHANNEL_SECRET = os.getenv('LINE_CHANNEL_SECRET')
-NGROK_AUTHTOKEN = os.getenv('NGROK_AUTHTOKEN')
+#NGROK_AUTHTOKEN = os.getenv('NGROK_AUTHTOKEN')
 
-# ngrok
-conf.get_default().auth_token = NGROK_AUTHTOKEN
-ngrok_tunnel = ngrok.connect(8888)
-print("Ngrok Tunnel URL:", ngrok_tunnel.public_url)
+# # ngrok
+# conf.get_default().auth_token = NGROK_AUTHTOKEN
+# ngrok_tunnel = ngrok.connect(8888)
+# print("Ngrok Tunnel URL:", ngrok_tunnel.public_url)
 
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-pro')
@@ -56,4 +57,4 @@ class GeminiLineBot(LineBot):
 if __name__ == "__main__":
     bot = GeminiLineBot(ACCESS_TOKEN, CHANNEL_SECRET)
     app = bot.create_app()
-    app.run(host='0.0.0.0',port=8888)
+    app.run()
