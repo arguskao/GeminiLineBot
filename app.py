@@ -9,13 +9,14 @@ from linebot.exceptions import (
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, ImageMessage,
 )
-from line_bot_base import LineBot  # Assuming you have a file named line_bot_base.py
+
 import google.generativeai as genai
 import os
 from PIL import Image
 from dotenv import load_dotenv
 from io import BytesIO
 
+app = Flask(__name__)
 # Load environment variables from .env file
 script_directory = os.path.dirname(os.path.abspath(__file__))
 dotenv_path = os.path.join(script_directory, '.env')
@@ -31,7 +32,37 @@ genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-pro')
 modelv = genai.GenerativeModel('gemini-pro-vision')
 
-class CombinedLineBot(LineBot):
+class CombinedLineBot:
+    def __init__(self, access_token, channel_secret):
+        self.line_bot_api = LineBotApi(access_token)
+        self.handler = WebhookHandler(channel_secret)
+
+    def create_app(self):
+        app = Flask(__name__)
+
+        @app.route("/callback", methods=['POST'])
+        def callback():
+            signature = request.headers['X-Line-Signature']
+            body = request.get_data(as_text=True)
+
+            try:
+                self.handler.handle(body, signature)
+            except InvalidSignatureError:
+                print("Invalid signature.")
+                abort(400)
+
+            return 'OK'
+
+        @self.handler.add(MessageEvent, message=TextMessage)
+        def handle_message(event):
+            self.handle_text_message(event)
+
+        @self.handler.add(MessageEvent, message=ImageMessage)
+        def handle_image_message(event):
+            self.handle_image_message(event)
+
+        return app
+
     def handle_text_message(self, event):
         user_message = "(zh-tw) {}".format(event.message.text)
         response = model.start_chat().send_message(user_message)
@@ -58,7 +89,8 @@ class CombinedLineBot(LineBot):
             TextSendMessage(text=reply_text),
         )
 
+    
 if __name__ == "__main__":
     bot = CombinedLineBot(ACCESS_TOKEN, CHANNEL_SECRET)
     app = bot.create_app()
-    app.run()
+    app.run()    
