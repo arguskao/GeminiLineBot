@@ -9,7 +9,7 @@ from linebot.exceptions import (
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, ImageMessage,
 )
-#from line_bot_base import LineBot  # Assuming you have a file named line_bot_base.py
+
 import google.generativeai as genai
 import os
 from PIL import Image
@@ -18,8 +18,8 @@ from io import BytesIO
 
 app = Flask(__name__)
 # Load environment variables from .env file
-#script_directory = os.path.dirname(os.path.abspath(__file__))
-dotenv_path =  ('.env')
+script_directory = os.path.dirname(os.path.abspath(__file__))
+dotenv_path = os.path.join(script_directory, '.env')
 load_dotenv(dotenv_path)
 
 # Load LINE Bot credentials from environment variables
@@ -89,10 +89,6 @@ class CombinedLineBot:
             TextSendMessage(text=reply_text),
         )
 
-# if __name__ == "__main__":
-#     bot = CombinedLineBot(ACCESS_TOKEN, CHANNEL_SECRET)
-#     app = bot.create_app()
-#     app.run()
     
 if __name__ == "__main__":
     bot = CombinedLineBot(ACCESS_TOKEN, CHANNEL_SECRET)
